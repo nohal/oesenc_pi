@@ -175,11 +175,11 @@ IF(APPLE)
         message ("Generating data directory")
         endif ()
 
-   FILE(GLOB PACKAGE_DATA_FILES ${CMAKE_SOURCE_DIR}/data/*)
+   FILE(GLOB PACKAGE_DATA_FILES ${PROJECT_SOURCE_DIR}/data/*)
 
    FOREACH (_currentDataFile ${PACKAGE_DATA_FILES})
         MESSAGE (STATUS "copying: ${_currentDataFile}" )
-        configure_file(${_currentDataFile} ${CMAKE_CURRENT_BINARY_DIR}/data COPYONLY)
+        configure_file(${_currentDataFile} ${PROJECT_BINARY_DIR}/data COPYONLY)
    ENDFOREACH (_currentDataFile )
    
    INSTALL(TARGETS ${PACKAGE_NAME} RUNTIME LIBRARY DESTINATION ${PACKAGE_NAME}/${PACKAGE_NAME})

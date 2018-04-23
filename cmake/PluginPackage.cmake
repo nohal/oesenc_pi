@@ -37,8 +37,6 @@ IF(WIN32)
 #  SET(CPACK_NSIS_INSTALLED_ICON_NAME "${PACKAGE_NAME}")
 SET(CPACK_NSIS_DISPLAY_NAME "OpenCPN ${PACKAGE_NAME}")
 
-#  SET(CPACK_PACKAGE_FILE_NAME "${PACKAGE_NAME}_${VERSION_MAJOR}.${VERSION_MINOR}_setup" )
-
   SET(CPACK_NSIS_DIR "${PROJECT_SOURCE_DIR}/buildwin/NSIS_Unicode")  #Gunther
   SET(CPACK_BUILDWIN_DIR "${PROJECT_SOURCE_DIR}/buildwin")  #Gunther
 
@@ -81,9 +79,9 @@ IF(UNIX AND NOT APPLE)
   IF (CMAKE_SYSTEM_PROCESSOR MATCHES "arm*")
     SET (ARCH "armhf")
     # don't bother with rpm on armhf
-    SET(CPACK_GENERATOR "DEB;TBZ2")
+    SET(CPACK_GENERATOR "DEB;RPM;TBZ2")
   ELSE ()
-    SET(CPACK_GENERATOR "DEB;TBZ2")
+    SET(CPACK_GENERATOR "DEB;RPM;TBZ2")
 
     IF (CMAKE_SIZEOF_VOID_P MATCHES "8")
       SET (ARCH "amd64")
@@ -147,27 +145,20 @@ ENDIF(TWIN32 AND NOT UNIX)
 
 INCLUDE(CPack)
 
-
+IF(NOT STANDALONE MATCHES "BUNDLED")
 IF(APPLE)
+MESSAGE (STATUS "*** Staging to build PlugIn OSX Package ***")
 
- #  Copy a few generic files so the Packages installer builder can find them relative to ${CMAKE_CURRENT_BINARY_DIR}
+ #  Copy a bunch of files so the Packages installer builder can find them
+ #  relative to ${CMAKE_CURRENT_BINARY_DIR}
  #  This avoids absolute paths in the chartdldr_pi.pkgproj file
 
-configure_file(${PROJECT_SOURCE_DIR}/cmake/gpl.txt ${CMAKE_CURRENT_BINARY_DIR}/license.txt COPYONLY)
+configure_file(${PROJECT_SOURCE_DIR}/cmake/gpl.txt
+            ${CMAKE_CURRENT_BINARY_DIR}/license.txt COPYONLY)
 
-configure_file(${PROJECT_SOURCE_DIR}/buildosx/InstallOSX/pkg_background.jpg ${CMAKE_CURRENT_BINARY_DIR}/pkg_background.jpg COPYONLY)
+configure_file(${PROJECT_SOURCE_DIR}/buildosx/InstallOSX/pkg_background.jpg
+            ${CMAKE_CURRENT_BINARY_DIR}/pkg_background.jpg COPYONLY)
 
-            
-  # This is a bit of a hack...
-  # We need to copy the helper utility to the binary build directory so that the PACKAGES scripts will find it.
-  # Would be nicer if this could be specified from the top level cmake file, so that this file remains generic...
-#configure_file(${PROJECT_SOURCE_DIR}/buildosx/oeserverd/oeserverd
-#            ${CMAKE_CURRENT_BINARY_DIR}/oeserverd COPYONLY)
-
-#configure_file(${PROJECT_SOURCE_DIR}/src/rrc_eula_ChartSetsForOpenCPN.txt
-#            ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-            
-            
  # Patch the pkgproj.in file to make the output package name conform to Xxx-Plugin_x.x.pkg format
  #  Key is:
  #  <key>NAME</key>
@@ -189,3 +180,18 @@ configure_file(${PROJECT_SOURCE_DIR}/buildosx/InstallOSX/pkg_background.jpg ${CM
 
 
 ENDIF(APPLE)
+
+IF(WIN32)
+  SET(CPACK_PACKAGE_FILE_NAME "${PACKAGE_NAME}-${VERSION_MAJOR}.${VERSION_MINOR}-win32.exe" )
+  MESSAGE(STATUS "FILE: ${CPACK_PACKAGE_FILE_NAME}")
+  add_custom_command(OUTPUT ${CPACK_PACKAGE_FILE_NAME}
+	  COMMAND signtool sign /v /f \\cert\\OpenCPNSPC.pfx /d http://www.opencpn.org /t http://timestamp.verisign.com/scripts/timstamp.dll ${CPACK_PACKAGE_FILE_NAME}
+	  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+	  DEPENDS ${PACKAGE_NAME}
+	  COMMENT "Code-Signing: ${CPACK_PACKAGE_FILE_NAME}")
+  ADD_CUSTOM_TARGET(codesign COMMENT "code signing: Done."
+  DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${CPACK_PACKAGE_FILE_NAME} )
+
+ENDIF(WIN32)
+ENDIF(NOT STANDALONE MATCHES "BUNDLED")
+
