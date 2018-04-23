@@ -55,7 +55,6 @@
 #include "json_defs.h"
 #include "jsonwriter.h"
 #include "jsonreader.h"
-#include "dsa_utils.h"
 #include "sha1.h"
 #include "ochartShop.h"
 #include "version.h"
@@ -2171,7 +2170,7 @@ IMPLEMENT_DYNAMIC_CLASS( SENCGetUserKeyDialog, wxDialog )
      itemBoxSizer2->Add( itemStaticBoxSizer4, 0, wxEXPAND | wxALL, 5 );
 
      wxStaticText* itemStaticText5 = new wxStaticText( itemDialog1, wxID_STATIC, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
-     itemStaticBoxSizer4->Add( itemStaticText5, 0, wxALIGN_LEFT | wxLEFT | wxRIGHT | wxTOP | wxADJUST_MINSIZE, 5 );
+     itemStaticBoxSizer4->Add( itemStaticText5, 0, wxALIGN_LEFT | wxLEFT | wxRIGHT | wxTOP, 5 );
 
      m_UserKeyCtl = new wxTextCtrl( itemDialog1, ID_GETIP_IP, _T(""), wxDefaultPosition,
      wxSize( 180, -1 ), 0 );
@@ -2218,7 +2217,7 @@ Your oeSENC UserKey may be obtained from your chart provider.\n\n"),
      }
                                        
      if(itemStaticTextLegend){
-         itemBoxSizer2->Add( itemStaticTextLegend, 0, wxALIGN_LEFT | wxLEFT | wxRIGHT | wxTOP | wxADJUST_MINSIZE, 5 );
+         itemBoxSizer2->Add( itemStaticTextLegend, 0, wxALIGN_LEFT | wxLEFT | wxRIGHT | wxTOP, 5 );
      }
          
                                        
