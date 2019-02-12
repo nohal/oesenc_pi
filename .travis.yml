@@ -52,7 +52,7 @@ deploy:
       condition: "$TRAVIS_OS_NAME = osx"
       repo: nohal/oesenc_pi
   - provider: launchpad
-    slug: "~nohal/oesenc-pi/+git/master"
+    slug: "~nohal/nohal-oesenc/+git/master"
     oauth_token:
       secure: XnkZHbxALvy4uQrL6/RmN+8/b1h8HwV6wi3h+iuPT815OQA7EIrHx06o112cNI2QuBiODVneyWCxr/OCGjwlkwNRyEIwc7Q5uBHYGJB6QqMJYEBEsMkTkZ/Pe+TaaE+S1TQJ5s1GgTTTuZxQYZfGU+SjLu7fTzsZ71nsuEpPxnU=
     oauth_token_secret:
